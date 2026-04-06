@@ -20,7 +20,7 @@ function ResumeUpload() {
     formData.append("resume", file);
 
     try {
-      const response = await axios.post("http://localhost:5000/upload", formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/upload`, formData);
       localStorage.setItem("analysisData", JSON.stringify(response.data));
       navigate("/analysis");
     } catch (error) {
