@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
 function Login() {
   const [name, setName] = useState("");
@@ -32,26 +33,9 @@ function Login() {
         color: "var(--text-main)",
       }}
     >
-      <div className="glass-panel"
-        style={{
-          width: "100%",
-          maxWidth: "1100px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          overflow: "hidden",
-        }}
-      >
+      <div className="glass-panel login-grid">
         {/* Left Section */}
-        <div
-          style={{
-            padding: "60px 50px",
-            background:
-              "linear-gradient(160deg, var(--glow-2), var(--glow-1))",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
+        <div className="login-info-panel">
           <div
             style={{
               display: "inline-block",
@@ -135,15 +119,7 @@ function Login() {
         </div>
 
         {/* Right Section */}
-        <div
-          style={{
-            padding: "60px 50px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            background: "var(--glass-bg)",
-          }}
-        >
+        <div className="login-form-panel">
           <h2
             style={{
               fontSize: "2.2rem",

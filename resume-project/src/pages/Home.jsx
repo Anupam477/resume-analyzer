@@ -146,16 +146,7 @@ function Home() {
         color: "var(--text-main)",
       }}
     >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "980px",
-          display: "grid",
-          gridTemplateColumns: "1.1fr 0.9fr",
-          gap: "24px",
-          alignItems: "stretch",
-        }}
-      >
+      <div className="home-grid">
         <div className="glass-panel"
           style={{
             padding: "55px 42px",
