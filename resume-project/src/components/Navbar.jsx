@@ -121,6 +121,24 @@ function Navbar() {
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle Theme">
           {isDarkMode ? "☀️" : "🌙"}
         </button>
+
+        {userEmail !== "admin@resume.com" && (
+          <NavLink 
+            to="/login" 
+            style={{ 
+              textDecoration: "none", 
+              color: "var(--text-muted)", 
+              fontSize: "0.85rem", 
+              marginLeft: "10px",
+              opacity: 0.6,
+              transition: "opacity 0.2s"
+            }}
+            onMouseOver={(e) => e.target.style.opacity = 1}
+            onMouseOut={(e) => e.target.style.opacity = 0.6}
+          >
+            Admin
+          </NavLink>
+        )}
       </div>
     </nav>
   );
