@@ -19,6 +19,8 @@ mongoose
 const resumeSchema = new mongoose.Schema(
   {
     filename: String,
+    userEmail: String,
+    userName: String,
     skills: [String],
     score: Number,
     jobs: Array,
@@ -29,6 +31,18 @@ const resumeSchema = new mongoose.Schema(
 );
 
 const Resume = mongoose.model("Resume", resumeSchema);
+
+// New Job Schema & Model
+const jobSchema = new mongoose.Schema(
+  {
+    title: String,
+    company: String,
+    skillsRequired: [String],
+    applyLink: String,
+  },
+  { timestamps: true }
+);
+const Job = mongoose.model("Job", jobSchema);
 
 const upload = multer({
   dest: "uploads/",
@@ -54,21 +68,6 @@ const skillDatabase = [
   "github",
 ];
 
-const jobsDatabase = [
-  {
-    title: "Frontend Developer",
-    company: "Tech Solutions",
-    skillsRequired: ["html", "css", "javascript", "react"],
-    applyLink: "https://www.linkedin.com/jobs/",
-  },
-  {
-    title: "Backend Developer",
-    company: "CodeCraft",
-    skillsRequired: ["node", "express", "mongodb", "sql"],
-    applyLink: "https://www.linkedin.com/jobs/",
-  },
-];
-
 function extractSkills(text) {
   const lowerText = text.toLowerCase();
   return skillDatabase.filter((skill) =>
@@ -80,18 +79,22 @@ function calculateScore(skills) {
   return Math.min(skills.length * 10, 100);
 }
 
-function matchJobs(skills) {
-  return jobsDatabase.map((job) => {
+function matchJobs(skills, availableJobs) {
+  return availableJobs.map((job) => {
     const matchedSkills = job.skillsRequired.filter((skill) =>
-      skills.includes(skill)
+      skills.includes(skill.toLowerCase())
     );
 
-    const matchPercent = Math.round(
-      (matchedSkills.length / job.skillsRequired.length) * 100
-    );
+    const matchPercent =
+      job.skillsRequired.length > 0
+        ? Math.round((matchedSkills.length / job.skillsRequired.length) * 100)
+        : 0;
 
     return {
-      ...job,
+      title: job.title,
+      company: job.company,
+      skillsRequired: job.skillsRequired,
+      applyLink: job.applyLink,
       matchedSkills,
       matchPercent,
     };
@@ -154,9 +157,15 @@ app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
+// Resume Endpoints
 app.get("/resumes", async (req, res) => {
   try {
-    const resumes = await Resume.find().sort({ createdAt: -1 });
+    const { email } = req.query;
+    let query = {};
+    if (email) {
+      query.userEmail = email;
+    }
+    const resumes = await Resume.find(query).sort({ createdAt: -1 });
     res.json(resumes);
   } catch (error) {
     console.log("Fetch resumes error:", error.message);
@@ -183,18 +192,26 @@ app.post("/upload", upload.single("resume"), async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
+    const { userEmail, userName } = req.body;
+
     const dataBuffer = fs.readFileSync(req.file.path);
     const pdfData = await pdfParse(dataBuffer);
 
     const text = pdfData.text || "";
     const skills = extractSkills(text);
     const score = calculateScore(skills);
-    const jobs = matchJobs(skills);
+    
+    // Dynamically fetch jobs for matching
+    const availableJobs = await Job.find();
+    const jobs = matchJobs(skills, availableJobs);
+    
     const suggestions = generateSuggestions(skills);
     const aiAnalysis = generateAIAnalysis(skills, score);
 
     const newResume = new Resume({
       filename: req.file.originalname,
+      userEmail: userEmail || "anonymous",
+      userName: userName || "User",
       skills,
       score,
       jobs,
@@ -223,6 +240,39 @@ app.post("/upload", upload.single("resume"), async (req, res) => {
     }
 
     res.status(500).json({ error: "Upload failed" });
+  }
+});
+
+// Jobs Admin Endpoints
+app.get("/jobs", async (req, res) => {
+  try {
+    const jobs = await Job.find().sort({ createdAt: -1 });
+    res.json(jobs);
+  } catch (error) {
+    console.log("Fetch jobs error:", error.message);
+    res.status(500).json({ error: "Failed to fetch jobs" });
+  }
+});
+
+app.post("/jobs", async (req, res) => {
+  try {
+    const { title, company, skillsRequired, applyLink } = req.body;
+    const newJob = new Job({ title, company, skillsRequired, applyLink });
+    await newJob.save();
+    res.json(newJob);
+  } catch (error) {
+    console.log("Add job error:", error.message);
+    res.status(500).json({ error: "Failed to add job" });
+  }
+});
+
+app.delete("/jobs/:id", async (req, res) => {
+  try {
+    await Job.findByIdAndDelete(req.params.id);
+    res.json({ message: "Job deleted" });
+  } catch (error) {
+    console.log("Delete job error:", error.message);
+    res.status(500).json({ error: "Delete job failed" });
   }
 });
 

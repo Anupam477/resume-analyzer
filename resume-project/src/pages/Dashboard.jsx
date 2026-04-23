@@ -10,9 +10,15 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const fetchResumes = async () => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (!userEmail) {
+      navigate("/login");
+      return;
+    }
+
     try {
       setLoading(true);
-      const res = await axios.get(`${API_URL}/resumes`);
+      const res = await axios.get(`${API_URL}/resumes?email=${userEmail}`);
       setResumes(res.data || []);
     } catch (error) {
       console.log("Error fetching resumes:", error);
@@ -59,12 +65,11 @@ function Dashboard() {
   };
 
   return (
-    <div
+    <div className="page-animate"
       style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #020617, #0f172a, #1e293b)",
+        minHeight: "calc(100vh - 75px)",
         padding: "50px 20px",
-        color: "#fff",
+        color: "var(--text-main)",
       }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -82,7 +87,7 @@ function Dashboard() {
         <p
           style={{
             textAlign: "center",
-            color: "#cbd5e1",
+            color: "var(--text-muted)",
             marginBottom: "40px",
           }}
         >
@@ -91,12 +96,12 @@ function Dashboard() {
 
         {loading ? (
           <div style={{ textAlign: "center", marginTop: "50px" }}>
-            <h2 style={{ color: "#94a3b8" }}>Loading resumes...</h2>
+            <h2 style={{ color: "var(--text-muted)" }}>Loading resumes...</h2>
           </div>
         ) : resumes.length === 0 ? (
           <div
             style={{
-              background: "rgba(255,255,255,0.06)",
+              background: "var(--glass-bg)",
               padding: "35px",
               borderRadius: "24px",
               textAlign: "center",
@@ -109,7 +114,7 @@ function Dashboard() {
                 marginTop: "20px",
                 padding: "12px 20px",
                 borderRadius: "12px",
-                background: "#2563eb",
+                background: "linear-gradient(135deg, var(--accent-secondary), var(--accent-primary))",
                 color: "#fff",
                 border: "none",
                 cursor: "pointer",
@@ -131,13 +136,13 @@ function Dashboard() {
               <div
                 key={item._id}
                 style={{
-                  background: "rgba(255,255,255,0.06)",
+                  background: "var(--glass-bg)",
                   borderRadius: "22px",
                   padding: "20px",
                   minHeight: "230px",
                   boxSizing: "border-box",
                   overflow: "hidden",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  border: "1px solid var(--glass-border)",
                 }}
               >
                 <h3
@@ -166,7 +171,8 @@ function Dashboard() {
                       <span
                         key={i}
                         style={{
-                          background: "#1e40af",
+                          background: "var(--bg-secondary)",
+                          color: "var(--accent-secondary)",
                           padding: "6px 12px",
                           borderRadius: "999px",
                           fontSize: "12px",
@@ -179,7 +185,7 @@ function Dashboard() {
                       </span>
                     ))
                   ) : (
-                    <span style={{ color: "#94a3b8" }}>No skills</span>
+                    <span style={{ color: "var(--text-muted)" }}>No skills</span>
                   )}
                 </div>
 
@@ -193,7 +199,7 @@ function Dashboard() {
                 <div
                   style={{
                     height: "8px",
-                    background: "rgba(255,255,255,0.08)",
+                    background: "var(--glass-border)",
                     borderRadius: "10px",
                     marginBottom: "18px",
                     overflow: "hidden",
@@ -221,7 +227,7 @@ function Dashboard() {
                     style={{
                       padding: "12px",
                       borderRadius: "12px",
-                      background: "#2563eb",
+                      background: "linear-gradient(135deg, var(--accent-secondary), var(--accent-primary))",
                       color: "#fff",
                       border: "none",
                       cursor: "pointer",

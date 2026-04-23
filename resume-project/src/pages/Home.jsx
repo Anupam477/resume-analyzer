@@ -8,6 +8,9 @@ function Home() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginName, setLoginName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,14 +65,11 @@ function Home() {
     setSelectedFile(file);
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert("Please select a PDF file first");
-      return;
-    }
-
+  const processUpload = async (emailToUse, nameToUse) => {
     const formData = new FormData();
     formData.append("resume", selectedFile);
+    formData.append("userEmail", emailToUse);
+    if (nameToUse) formData.append("userName", nameToUse);
 
     try {
       setLoading(true);
@@ -105,22 +105,45 @@ function Home() {
       }
     } finally {
       setLoading(false);
+      setShowLoginPopup(false);
     }
   };
 
+  const handleUpload = () => {
+    if (!selectedFile) {
+      alert("Please select a PDF file first");
+      return;
+    }
+
+    const userEmail = localStorage.getItem("userEmail");
+    const userName = localStorage.getItem("userName");
+    if (userEmail) {
+      processUpload(userEmail, userName);
+    } else {
+      setShowLoginPopup(true);
+    }
+  };
+
+  const handlePopupSubmit = (e) => {
+    e.preventDefault();
+    if (!loginEmail || !loginName) return;
+    localStorage.setItem("userEmail", loginEmail);
+    localStorage.setItem("userName", loginName);
+    processUpload(loginEmail, loginName);
+  };
+
   return (
-    <div
+    <div className="page-animate"
       style={{
-        minHeight: "100vh",
+        minHeight: "calc(100vh - 75px)",
         width: "100%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "linear-gradient(135deg, #020617, #0f172a, #1e3a8a)",
         padding: "20px",
         overflow: "hidden",
         boxSizing: "border-box",
-        color: "#fff",
+        color: "var(--text-main)",
       }}
     >
       <div
@@ -133,14 +156,9 @@ function Home() {
           alignItems: "stretch",
         }}
       >
-        <div
+        <div className="glass-panel"
           style={{
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: "30px",
             padding: "55px 42px",
-            boxShadow: "0 18px 50px rgba(0,0,0,0.30)",
-            backdropFilter: "blur(14px)",
-            border: "1px solid rgba(255,255,255,0.10)",
             boxSizing: "border-box",
           }}
         >
@@ -149,8 +167,8 @@ function Home() {
               display: "inline-block",
               padding: "10px 20px",
               borderRadius: "999px",
-              background: "rgba(255,255,255,0.08)",
-              color: "#cbd5e1",
+              background: "var(--bg-secondary)",
+              color: "var(--text-muted)",
               fontWeight: "600",
               marginBottom: "24px",
               fontSize: "0.92rem",
@@ -162,7 +180,7 @@ function Home() {
           <h1
             style={{
               fontSize: "3.2rem",
-              color: "#f8fafc",
+              color: "var(--text-main)",
               marginBottom: "18px",
               fontWeight: "800",
               lineHeight: "1.15",
@@ -176,7 +194,7 @@ function Home() {
           <p
             style={{
               fontSize: "1.08rem",
-              color: "#94a3b8",
+              color: "var(--text-muted)",
               marginBottom: "28px",
               lineHeight: "1.8",
               maxWidth: "520px",
@@ -190,11 +208,11 @@ function Home() {
           <div style={{ display: "grid", gap: "14px" }}>
             <div
               style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--glass-border)",
                 borderRadius: "18px",
                 padding: "15px 18px",
-                color: "#e2e8f0",
+                color: "var(--text-main)",
                 fontSize: "0.98rem",
               }}
             >
@@ -203,11 +221,11 @@ function Home() {
 
             <div
               style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--glass-border)",
                 borderRadius: "18px",
                 padding: "15px 18px",
-                color: "#e2e8f0",
+                color: "var(--text-main)",
                 fontSize: "0.98rem",
               }}
             >
@@ -216,11 +234,11 @@ function Home() {
 
             <div
               style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--glass-border)",
                 borderRadius: "18px",
                 padding: "15px 18px",
-                color: "#e2e8f0",
+                color: "var(--text-main)",
                 fontSize: "0.98rem",
               }}
             >
@@ -229,14 +247,9 @@ function Home() {
           </div>
         </div>
 
-        <div
+        <div className="glass-panel"
           style={{
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: "30px",
             padding: "42px 32px",
-            boxShadow: "0 18px 50px rgba(0,0,0,0.30)",
-            backdropFilter: "blur(14px)",
-            border: "1px solid rgba(255,255,255,0.10)",
             boxSizing: "border-box",
             display: "flex",
             flexDirection: "column",
@@ -245,7 +258,7 @@ function Home() {
         >
           <h2
             style={{
-              color: "#f8fafc",
+              color: "var(--text-main)",
               marginBottom: "12px",
               fontSize: "2rem",
               fontWeight: "700",
@@ -258,7 +271,7 @@ function Home() {
           <p
             style={{
               textAlign: "center",
-              color: "#94a3b8",
+              color: "var(--text-muted)",
               marginBottom: "24px",
               lineHeight: "1.7",
               fontSize: "0.98rem",
@@ -279,11 +292,11 @@ function Home() {
               padding: "28px 20px",
               borderRadius: "22px",
               border: isDragActive
-                ? "2px solid #60a5fa"
-                : "2px dashed rgba(255,255,255,0.20)",
+                ? "2px solid var(--accent-secondary)"
+                : "2px dashed var(--glass-border)",
               background: isDragActive
-                ? "rgba(59,130,246,0.12)"
-                : "rgba(255,255,255,0.04)",
+                ? "var(--glow-2)"
+                : "var(--glass-bg)",
               textAlign: "center",
               marginBottom: "18px",
               transition: "0.3s ease",
@@ -294,7 +307,7 @@ function Home() {
 
             <p
               style={{
-                color: "#e2e8f0",
+                color: "var(--text-main)",
                 marginBottom: "8px",
                 fontWeight: "600",
               }}
@@ -304,7 +317,7 @@ function Home() {
 
             <p
               style={{
-                color: "#94a3b8",
+                color: "var(--text-muted)",
                 fontSize: "0.92rem",
                 marginBottom: "14px",
               }}
@@ -320,9 +333,9 @@ function Home() {
                 width: "100%",
                 padding: "14px",
                 borderRadius: "14px",
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.05)",
-                color: "#e2e8f0",
+                border: "1px solid var(--glass-border)",
+                background: "var(--bg-secondary)",
+                color: "var(--text-main)",
                 fontSize: "0.95rem",
                 boxSizing: "border-box",
                 cursor: "pointer",
@@ -333,9 +346,9 @@ function Home() {
           {selectedFile && (
             <div
               style={{
-                background: "rgba(16,185,129,0.12)",
-                border: "1px solid rgba(16,185,129,0.25)",
-                color: "#d1fae5",
+                background: "var(--glow-1)",
+                border: "1px solid var(--accent-primary)",
+                color: "var(--text-main)",
                 padding: "14px 16px",
                 borderRadius: "16px",
                 marginBottom: "18px",
@@ -350,18 +363,19 @@ function Home() {
           <button
             onClick={handleUpload}
             disabled={loading}
+            className="btn-glow"
             style={{
               width: "100%",
               padding: "17px",
               border: "none",
               borderRadius: "16px",
-              background: "linear-gradient(90deg, #2563eb, #6d28d9)",
+              background: "linear-gradient(90deg, var(--accent-secondary), var(--accent-primary))",
               color: "#fff",
               fontWeight: "700",
               fontSize: "1.05rem",
               cursor: loading ? "not-allowed" : "pointer",
               opacity: loading ? 0.75 : 1,
-              boxShadow: "0 14px 30px rgba(37,99,235,0.28)",
+              boxShadow: "0 14px 30px var(--glow-2)",
               transition: "0.3s ease",
             }}
           >
@@ -372,7 +386,7 @@ function Home() {
             style={{
               marginTop: "16px",
               textAlign: "center",
-              color: "#64748b",
+              color: "var(--text-muted)",
               fontSize: "0.88rem",
             }}
           >
@@ -380,6 +394,89 @@ function Home() {
           </p>
         </div>
       </div>
+
+      {/* Login Popup Modal */}
+      {showLoginPopup && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, width: "100%", height: "100%",
+          background: "rgba(0,0,0,0.6)",
+          backdropFilter: "blur(5px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000
+        }}>
+          <div className="glass-panel page-animate" style={{ padding: "40px", maxWidth: "420px", width: "90%", textAlign: "center", background: "var(--nav-bg)" }}>
+            <h2 style={{ marginBottom: "15px", color: "var(--text-main)", fontSize: "1.8rem" }}>Login Required</h2>
+            <p style={{ color: "var(--text-muted)", marginBottom: "25px", fontSize: "1rem", lineHeight: "1.6" }}>
+              Please enter your email to securely save your resume and access your personalized dashboard.
+            </p>
+            <form onSubmit={handlePopupSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+              <input
+                type="text"
+                value={loginName}
+                onChange={(e) => setLoginName(e.target.value)}
+                placeholder="Full Name (e.g. John Doe)"
+                required
+                style={{
+                  width: "100%",
+                  padding: "16px",
+                  borderRadius: "14px",
+                  border: "1px solid var(--glass-border)",
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-main)",
+                  outline: "none",
+                  fontSize: "1.05rem"
+                }}
+              />
+              <input
+                type="email"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="Enter your email (e.g. user@test.com)"
+                required
+                style={{
+                  width: "100%",
+                  padding: "16px",
+                  borderRadius: "14px",
+                  border: "1px solid var(--glass-border)",
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-main)",
+                  outline: "none",
+                  fontSize: "1.05rem"
+                }}
+              />
+              <div style={{ display: "flex", gap: "12px", marginTop: "15px" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowLoginPopup(false)}
+                  style={{
+                    flex: 1, padding: "14px", borderRadius: "12px", border: "1px solid var(--glass-border)",
+                    background: "transparent", color: "var(--text-main)", cursor: "pointer", fontWeight: "600",
+                    fontSize: "1rem"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-glow"
+                  disabled={loading}
+                  style={{
+                    flex: 1, padding: "14px", borderRadius: "12px", border: "none",
+                    background: "linear-gradient(90deg, var(--accent-secondary), var(--accent-primary))",
+                    color: "#fff", cursor: loading ? "not-allowed" : "pointer", fontWeight: "700",
+                    fontSize: "1rem", opacity: loading ? 0.7 : 1
+                  }}
+                >
+                  {loading ? "Uploading..." : "Continue"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

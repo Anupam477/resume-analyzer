@@ -11,7 +11,7 @@ function AnalysisPage() {
   }
 
   return (
-    <div className="analysis-container">
+    <div className="analysis-container page-animate">
       <h1>Resume Analysis</h1>
 
       {/* Score */}
@@ -46,7 +46,7 @@ function AnalysisPage() {
 
       {/* Button */}
       <button
-        className="next-btn"
+        className="next-btn btn-glow"
         onClick={() =>
           navigate("/jobs", {
             state: {
