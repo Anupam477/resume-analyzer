@@ -15,132 +15,59 @@ function Navbar() {
     navigate("/login");
   };
 
-  useEffect(() => {
-    // Check local storage
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      setIsDarkMode(false);
-      document.documentElement.classList.add('light-theme');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('light-theme');
-      localStorage.setItem('theme', 'light');
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.remove('light-theme');
-      localStorage.setItem('theme', 'dark');
-      setIsDarkMode(true);
-    }
-  };
-
-  const linkStyle = ({ isActive }) => ({
-    color: isActive ? "var(--text-main)" : "var(--text-muted)",
-    background: isActive ? "var(--btn-glow-1)" : "transparent",
-    padding: "10px 16px",
-    borderRadius: "10px",
-    textDecoration: "none",
-    fontWeight: "600",
-    transition: "all 0.3s ease",
-    display: "inline-block",
-  });
+  const navItemClass = ({ isActive }) =>
+    `ref-sub-dock-link ${isActive ? "active" : ""}`;
 
   return (
-    <nav className="navbar">
-      <NavLink to="/home" className="logo">
-        Resume Analyzer
+    <header className="ref-sub-navbar">
+      {/* Brand Logo */}
+      <NavLink to="/" className="ref-sub-logo">
+        <span className="text-xl">🌱</span>
+        <span className="ref-sub-logo-text">ResumeCraft</span>
       </NavLink>
 
-      <div className="nav-links">
-        <NavLink to="/home" style={linkStyle}>
+      {/* Pill Dock Center Navigation */}
+      <nav className="ref-sub-dock">
+        <NavLink to="/" className={navItemClass}>
           Home
         </NavLink>
-
-        <NavLink to="/jobs" style={linkStyle}>
+        <NavLink to="/home" className={navItemClass}>
+          Analyze
+        </NavLink>
+        <NavLink to="/jobs" className={navItemClass}>
           Jobs
         </NavLink>
-
-        <NavLink to="/dashboard" style={linkStyle}>
+        <NavLink to="/dashboard" className={navItemClass}>
           Dashboard
         </NavLink>
-
         {userEmail === "admin@resume.com" && (
-          <NavLink to="/admin" style={{ ...linkStyle({ isActive: location.pathname === '/admin' }), color: "#ef4444" }}>
-            Admin Panel
+          <NavLink to="/admin" className={navItemClass}>
+            Admin
           </NavLink>
         )}
+      </nav>
 
+      {/* User / Auth Controls */}
+      <div className="ref-sub-actions">
         {userEmail ? (
-          <div style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: "12px", 
-            background: "var(--bg-secondary)", 
-            padding: "5px 12px 5px 5px", 
-            borderRadius: "999px", 
-            border: "1px solid var(--glass-border)" 
-          }}>
-            <div style={{ 
-              width: "36px", height: "36px", borderRadius: "50%", 
-              background: "linear-gradient(135deg, var(--accent-secondary), var(--accent-primary))", 
-              color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", 
-              fontWeight: "bold", fontSize: "1rem", boxShadow: "0 4px 10px var(--glow-1)",
-              textTransform: "uppercase"
-            }}>
-              {userName.charAt(0)}
+          <div className="flex items-center gap-3">
+            <div className="ref-user-avatar">
+              {userName.charAt(0).toUpperCase()}
             </div>
-            <span style={{ color: "var(--text-main)", fontSize: "0.95rem", fontWeight: "600" }}>
+            <span className="text-xs font-semibold text-[#faf7f2] hidden sm:inline">
               {userName}
             </span>
-            <button 
-              onClick={handleLogout}
-              style={{
-                background: "transparent",
-                color: "#ef4444",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                padding: "6px 12px",
-                borderRadius: "20px",
-                cursor: "pointer",
-                fontWeight: "600",
-                fontSize: "0.85rem",
-                transition: "all 0.3s ease",
-                marginLeft: "8px"
-              }}
-            >
+            <button onClick={handleLogout} className="ref-btn-logout">
               Logout
             </button>
           </div>
         ) : (
-          <NavLink to="/login" style={linkStyle}>
-            Login
-          </NavLink>
-        )}
-        
-        <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle Theme">
-          {isDarkMode ? "☀️" : "🌙"}
-        </button>
-
-        {userEmail !== "admin@resume.com" && (
-          <NavLink 
-            to="/login" 
-            style={{ 
-              textDecoration: "none", 
-              color: "var(--text-muted)", 
-              fontSize: "0.85rem", 
-              marginLeft: "10px",
-              opacity: 0.6,
-              transition: "opacity 0.2s"
-            }}
-            onMouseOver={(e) => e.target.style.opacity = 1}
-            onMouseOut={(e) => e.target.style.opacity = 0.6}
-          >
-            Admin
+          <NavLink to="/login" className="ref-btn-sub-login">
+            Sign In
           </NavLink>
         )}
       </div>
-    </nav>
+    </header>
   );
 }
 

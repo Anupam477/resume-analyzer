@@ -12,13 +12,7 @@ import AmbientBackground from "./components/AmbientBackground";
 
 function Layout() {
   const location = useLocation();
-  const navigate = useNavigate();
   const isLandingPage = location.pathname === "/";
-
-  // Force redirect to front page on any full page refresh
-  useEffect(() => {
-    navigate("/");
-  }, []);
 
   return (
     <>
