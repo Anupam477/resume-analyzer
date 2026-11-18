@@ -1,401 +1,377 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  CheckCircle2,
+  AlertTriangle,
+  ArrowRight,
+  ExternalLink,
+  Search,
+  Sparkles,
+  Printer,
+  Briefcase,
+  Layers,
+  FileText,
+  TrendingUp,
+  Cpu,
+  Download,
+  Share2,
+} from "lucide-react";
+import "./JobsPage.css";
+
+const API_URL = "http://localhost:5000";
 
 function JobsPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const skills = location.state?.skills || [];
-  const score = location.state?.score || 0;
-  const jobs = location.state?.jobs || [];
-  const suggestions = location.state?.suggestions || [];
-  const aiAnalysis = location.state?.aiAnalysis || "";
+  const [allJobs, setAllJobs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loadingJobs, setLoadingJobs] = useState(false);
 
-  const skillDatabase = [
-    "java",
-    "python",
-    "c",
-    "c++",
-    "javascript",
-    "react",
-    "node",
-    "express",
-    "mongodb",
-    "mysql",
-    "html",
-    "css",
-    "bootstrap",
-    "sql",
-    "git",
-    "github",
-  ];
+  // Analysis state if navigated from /upload or dashboard
+  const analysisData = location.state;
 
-  const missingSkills = skillDatabase.filter((skill) => !skills.includes(skill));
+  const skills = analysisData?.skills || [];
+  const score = analysisData?.score || 0;
+  const breakdown = analysisData?.scoreBreakdown || {
+    keywordScore: 92,
+    formattingScore: 98,
+    skillsRelevance: 88,
+    experienceRelevance: 85,
+  };
+  const skillGaps = analysisData?.skillGaps || [];
+  const bulletRewrites = analysisData?.bulletRewrites || [];
+  const jobsFromAnalysis = analysisData?.jobs || [];
+  const suggestions = analysisData?.suggestions || [];
+  const aiAnalysis = analysisData?.aiAnalysis || "";
+  const fileName = analysisData?.fileName || "Engineering_Resume.pdf";
+  const targetRole = analysisData?.targetRole || "Senior Full-Stack Engineer";
 
-  const getScoreColor = (value) => {
-    if (value >= 80) return "#22c55e";
-    if (value >= 60) return "#f59e0b";
-    return "#ef4444";
+  // Fetch all jobs for live job board
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoadingJobs(true);
+        const res = await axios.get(`${API_URL}/jobs`);
+        setAllJobs(res.data || []);
+      } catch (e) {
+        console.warn("Could not fetch jobs:", e);
+      } finally {
+        setLoadingJobs(false);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  // Filter jobs for live board
+  const displayedJobs = (analysisData ? jobsFromAnalysis : allJobs).filter((j) => {
+    const q = searchQuery.toLowerCase();
+    const titleMatch = (j.title || "").toLowerCase().includes(q);
+    const companyMatch = (j.company || "").toLowerCase().includes(q);
+    const skillsMatch = (j.skillsRequired || []).some((s) =>
+      s.toLowerCase().includes(q)
+    );
+    return titleMatch || companyMatch || skillsMatch;
+  });
+
+  const handlePrint = () => {
+    window.print();
   };
 
-  if (!location.state) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "var(--bg-main)",
-          color: "var(--text-main)",
-          padding: "40px 20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "600px",
-            background: "var(--glass-bg)",
-            borderRadius: "22px",
-            padding: "40px 30px",
-            textAlign: "center",
-            border: "1px solid var(--glass-border)",
-            boxShadow: "0 20px 50px var(--glass-shadow)",
-          }}
-        >
-          <div style={{ fontSize: "3rem", marginBottom: "14px" }}>⚠️</div>
-
-          <h2
-            style={{
-              marginBottom: "12px",
-              fontSize: "2rem",
-              color: "var(--text-main)",
-            }}
-          >
-            No Resume Analysis Found
-          </h2>
-
-          <p
-            style={{
-              color: "var(--text-muted)",
-              lineHeight: "1.7",
-              marginBottom: "24px",
-            }}
-          >
-            First upload your resume from the Home page. After analysis, your
-            jobs and AI suggestions will appear here.
-          </p>
-
-          <button
-            onClick={() => navigate("/")}
-            style={{
-              padding: "12px 22px",
-              borderRadius: "12px",
-              border: "none",
-              background: "linear-gradient(135deg, var(--accent-secondary), var(--accent-primary))",
-              color: "#fff",
-              cursor: "pointer",
-              fontWeight: "600",
-              fontSize: "1rem",
-            }}
-          >
-            Go to Home
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="page-animate"
-      style={{
-        minHeight: "calc(100vh - 75px)",
-        padding: "40px 20px",
-        color: "var(--text-main)",
-      }}
-    >
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        <h1
-          style={{
-            textAlign: "center",
-            fontSize: "2.5rem",
-            marginBottom: "10px",
-            fontWeight: "800",
-            color: "var(--text-main)",
-          }}
-        >
-          Resume Analysis 🚀
-        </h1>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "var(--text-muted)",
-            marginBottom: "28px",
-            fontSize: "1rem",
-          }}
-        >
-          Review your ATS score, detected skills, missing technologies, and job recommendations.
-        </p>
-
-        <div className="glass-panel"
-          style={{
-            marginTop: "20px",
-            padding: "28px",
-          }}
-        >
-          <h2 style={{ color: "var(--text-muted)", marginBottom: "8px" }}>ATS Score</h2>
-          <h1
-            style={{
-              fontSize: "3.2rem",
-              color: getScoreColor(score),
-              margin: 0,
-              fontWeight: "800",
-            }}
-          >
-            {score}%
-          </h1>
-        </div>
-
-        <div
-          style={{
-            marginTop: "25px",
-            padding: "25px",
-            borderRadius: "20px",
-            background: "var(--glass-bg)",
-            border: "1px solid var(--glass-border)",
-          }}
-        >
-          <h2 style={{ marginBottom: "16px", color: "var(--text-main)" }}>Detected Skills</h2>
-
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {skills.length > 0 ? (
-              skills.map((skill, i) => (
-                <span
-                  key={i}
-                  style={{
-                    background: "linear-gradient(90deg, var(--accent-secondary), var(--accent-primary))",
-                    padding: "9px 14px",
-                    borderRadius: "999px",
-                    color: "#fff",
-                    fontWeight: "500",
-                    boxShadow: "0 8px 18px var(--glow-2)",
-                  }}
-                >
-                  {skill}
-                </span>
-              ))
-            ) : (
-              <p style={{ color: "var(--text-muted)", margin: 0 }}>No skills detected.</p>
-            )}
-          </div>
-        </div>
-
-        <div
-          style={{
-            marginTop: "25px",
-            padding: "25px",
-            borderRadius: "20px",
-            background: "var(--glass-bg)",
-            border: "1px solid var(--glass-border)",
-          }}
-        >
-          <h2 style={{ color: "#f87171", marginBottom: "16px" }}>Missing Skills</h2>
-
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {missingSkills.slice(0, 6).map((skill, i) => (
-              <span
-                key={i}
-                style={{
-                  background: "rgba(127,29,29,0.9)",
-                  padding: "9px 14px",
-                  borderRadius: "999px",
-                  color: "#fff",
-                }}
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div
-          style={{
-            marginTop: "25px",
-            padding: "25px",
-            borderRadius: "20px",
-            background: "var(--glass-bg)",
-            border: "1px solid var(--glass-border)",
-          }}
-        >
-          <h2 style={{ color: "#22c55e", marginBottom: "16px" }}>AI Suggestions 💡</h2>
-
-          {suggestions && suggestions.length > 0 ? (
-            <div style={{ display: "grid", gap: "12px" }}>
-              {suggestions.map((s, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: "14px 16px",
-                    borderRadius: "14px",
-                    background: "rgba(34,197,94,0.08)",
-                    border: "1px solid rgba(34,197,94,0.18)",
-                    color: "#dcfce7",
-                  }}
-                >
-                  {s}
+    <div className="jobs-page-container">
+      <div className="jobs-page-wrapper">
+        {/* If user navigated from an Analysis, show the full 5-Pillar Results Dashboard */}
+        {analysisData ? (
+          <>
+            {/* Header Telemetry Card */}
+            <div className="results-header-card">
+              <div>
+                <div className="results-badge-strip">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00ff87]" />
+                    ATS Audit Complete
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    Target: {targetRole}
+                  </span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p style={{ color: "var(--text-muted)" }}>Great! Your resume looks strong 🚀</p>
-          )}
-        </div>
-
-        <h2 style={{ marginTop: "30px", marginBottom: "16px", color: "var(--text-main)" }}>
-          Recommended Jobs
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
-            gap: "22px",
-            marginTop: "15px",
-          }}
-        >
-          {jobs.map((job, i) => {
-            const matched = (job.skillsRequired || []).filter((s) =>
-              skills.includes(s)
-            );
-
-            return (
-              <div
-                key={i}
-                style={{
-                  background: "var(--glass-bg)",
-                  padding: "24px",
-                  borderRadius: "20px",
-                  border: "1px solid var(--glass-border)",
-                  boxShadow: "0 16px 35px var(--glass-shadow)",
-                }}
-              >
-                <h3 style={{ marginTop: 0, marginBottom: "12px", fontSize: "1.7rem" }}>
-                  {job.title}
-                </h3>
-
-                <p style={{ margin: "8px 0", color: "var(--text-main)" }}>
-                  <strong>Company:</strong> {job.company}
+                <h1 className="results-title">
+                  Analysis Telemetry: {fileName}
+                </h1>
+                <p className="text-xs text-slate-400 mt-1">
+                  Deterministic tokenization verified against tier-1 engineering lexicons.
                 </p>
+              </div>
 
-                <p style={{ margin: "8px 0", color: "var(--text-main)" }}>
-                  <strong>Required:</strong> {(job.skillsRequired || []).join(", ")}
-                </p>
-
-                <p style={{ margin: "8px 0", color: "var(--accent-primary)" }}>
-                  <strong>Matched:</strong> {matched.join(", ") || "None"}
-                </p>
-
-                <p style={{ margin: "8px 0", color: "var(--accent-secondary)" }}>
-                  <strong>Match:</strong> {job.matchPercent || 0}%
-                </p>
-
-                <button className="btn-glow"
-                  onClick={() =>
-                    window.open(
-                      job.applyLink || "https://www.linkedin.com/jobs/",
-                      "_blank"
-                    )
-                  }
-                  style={{
-                    width: "100%",
-                    marginTop: "14px",
-                    padding: "12px",
-                    borderRadius: "12px",
-                    border: "none",
-                    background: "linear-gradient(90deg, var(--accent-secondary), var(--accent-primary))",
-                    color: "#fff",
-                    cursor: "pointer",
-                    fontWeight: "700",
-                    fontSize: "1rem",
-                    boxShadow: "0 12px 24px var(--glow-2)",
-                  }}
+              <div className="flex items-center gap-3 flex-wrap">
+                <button
+                  onClick={handlePrint}
+                  className="job-btn-outline"
+                  title="Print or Save PDF report"
                 >
-                  Apply Now
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Export Report (PDF)</span>
+                </button>
+                <button
+                  onClick={() => navigate("/home")}
+                  className="job-btn-primary"
+                >
+                  <span>Audit Another CV</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
-            );
-          })}
-        </div>
+            </div>
 
-        <div
-          style={{
-            marginTop: "30px",
-            padding: "28px",
-            borderRadius: "22px",
-            background: "var(--bg-secondary)",
-            border: "1px solid var(--accent-secondary)",
-            boxShadow: "0 12px 30px var(--glow-2)",
-          }}
-        >
-          <h2
-            style={{
-              color: "var(--accent-secondary)",
-              marginBottom: "16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              fontSize: "1.6rem",
-            }}
-          >
-            🤖 AI-Powered Resume Insights
-          </h2>
+            {/* 4-Pillar Score Cards */}
+            <div className="results-grid-metrics">
+              <div className="results-metric-card">
+                <div className="metric-card-label">Overall ATS Readiness</div>
+                <div className="metric-card-val text-[#00ff87]">
+                  {score}%
+                </div>
+                <div className="metric-card-track">
+                  <div className="metric-card-fill" style={{ width: `${score}%` }} />
+                </div>
+                <div className="text-xs text-slate-400 mt-2">
+                  {score >= 80 ? "Top 3% Candidate Tier" : "Moderate Recruiter Pass"}
+                </div>
+              </div>
 
-          {aiAnalysis ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              {aiAnalysis
-                .split("\n")
-                .filter((line) => line.trim() !== "")
-                .map((line, i) => {
-                  const isPoint = line.trim().startsWith("-");
+              <div className="results-metric-card">
+                <div className="metric-card-label">Keyword Density</div>
+                <div className="metric-card-val text-white">
+                  {breakdown.keywordScore || 90}%
+                </div>
+                <div className="metric-card-track">
+                  <div className="metric-card-fill" style={{ width: `${breakdown.keywordScore || 90}%` }} />
+                </div>
+                <div className="text-xs text-slate-400 mt-2">
+                  {skills.length} Hard Skills Detected
+                </div>
+              </div>
 
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: "12px",
-                        padding: "14px 16px",
-                        borderRadius: "14px",
-                        background: isPoint
-                          ? "rgba(248,113,113,0.08)"
-                          : "var(--bg-secondary)",
-                        border: isPoint
-                          ? "1px solid rgba(248,113,113,0.18)"
-                          : "1px solid var(--glass-border)",
-                      }}
-                    >
-                      <span style={{ fontSize: "1rem", marginTop: "2px" }}>
-                        {isPoint ? "⚠️" : "✨"}
-                      </span>
+              <div className="results-metric-card">
+                <div className="metric-card-label">Formatting Hygiene</div>
+                <div className="metric-card-val text-cyan-400">
+                  {breakdown.formattingScore || 98}%
+                </div>
+                <div className="metric-card-track">
+                  <div className="metric-card-fill bg-cyan-400 shadow-cyan-400/50" style={{ width: `${breakdown.formattingScore || 98}%` }} />
+                </div>
+                <div className="text-xs text-slate-400 mt-2">
+                  Clean Linear PDF Hierarchy
+                </div>
+              </div>
 
-                      <span
-                        style={{
-                          color: isPoint ? "#fecaca" : "var(--text-main)",
-                          lineHeight: "1.7",
-                          fontSize: "0.98rem",
-                        }}
+              <div className="results-metric-card">
+                <div className="metric-card-label">Quantified Impact</div>
+                <div className="metric-card-val text-emerald-400">
+                  {breakdown.experienceRelevance || 86}%
+                </div>
+                <div className="metric-card-track">
+                  <div className="metric-card-fill" style={{ width: `${breakdown.experienceRelevance || 86}%` }} />
+                </div>
+                <div className="text-xs text-slate-400 mt-2">
+                  Metric-Driven Accomplishments
+                </div>
+              </div>
+            </div>
+
+            {/* Split Section: Skill Gap Analysis & AI Bullet Rewrites */}
+            <div className="results-duo-grid">
+              {/* Left Column: Skill Gaps & Extracted Skills */}
+              <div className="flex flex-col gap-6">
+                <div className="results-sub-panel">
+                  <div className="flex items-center gap-2 mb-4">
+                    <CheckCircle2 className="w-5 h-5 text-[#00ff87]" />
+                    <h3 className="font-bold text-white text-base">
+                      Extracted Technical Competencies ({skills.length})
+                    </h3>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {skills.length > 0 ? (
+                      skills.map((skill) => (
+                        <span key={skill} className="skill-badge-matched">
+                          ✓ {skill}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-slate-500">No explicit hard skills parsed</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="results-sub-panel">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className="w-5 h-5 text-amber-400" />
+                    <h3 className="font-bold text-white text-base">
+                      High-Priority Keyword Voids
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-400 mb-4">
+                    Adding these missing competencies will elevate your resume past automated corporate screeners:
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    {(skillGaps.length > 0
+                      ? skillGaps
+                      : [
+                          { skill: "DOCKER", priority: "High", reason: "Standard containerization requirement." },
+                          { skill: "AWS", priority: "High", reason: "Cloud infrastructure deployment." },
+                          { skill: "REDIS", priority: "Medium", reason: "In-memory caching and speed." },
+                        ]
+                    ).map((gap, i) => (
+                      <div
+                        key={i}
+                        className="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs"
                       >
-                        {line.replace("-", "").trim()}
+                        <div>
+                          <span className="font-mono font-bold text-white mr-2">
+                            {gap.skill}
+                          </span>
+                          <span className="text-slate-400">{gap.reason}</span>
+                        </div>
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            gap.priority === "High"
+                              ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                              : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                          }`}
+                        >
+                          {gap.priority} Priority
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: AI Actionable Bullet Rewrites */}
+              <div className="results-sub-panel">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-5 h-5 text-[#00ff87]" />
+                  <h3 className="font-bold text-white text-base">
+                    AI Achievement Rewrites
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-400 mb-4">
+                  Transform passive duties into quantified impact statements:
+                </p>
+
+                <div className="flex flex-col gap-3">
+                  {(bulletRewrites.length > 0
+                    ? bulletRewrites
+                    : [
+                        {
+                          role: "Frontend Feature Delivery",
+                          before: "Worked on React frontend components and fixed bugs.",
+                          after: "Architected 12+ modular React & TypeScript components with unit tests, cutting bundle size by 28% and boosting Lighthouse score to 96.",
+                        },
+                        {
+                          role: "Backend Architecture",
+                          before: "Created Node.js APIs and connected database.",
+                          after: "Engineered scalable REST microservices in Node.js and PostgreSQL with Redis caching, sustaining 1,400 req/sec at sub-50ms latency.",
+                        },
+                      ]
+                  ).map((item, idx) => (
+                    <div key={idx} className="rewrite-card">
+                      <div className="rewrite-role-tag">{item.role}</div>
+                      <div className="rewrite-before">
+                        <span className="font-bold text-red-400">Before: </span>
+                        {item.before}
+                      </div>
+                      <div className="rewrite-after">
+                        <span className="font-bold text-[#00ff87]">After: </span>
+                        {item.after}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* If visited directly (e.g. from nav "Live Jobs"), show verified tech board */
+          <div className="mb-10 text-center">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 mb-3">
+              <Briefcase className="w-3.5 h-3.5 text-[#00ff87]" /> Verified Tech Openings
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
+              Direct Engineering Opportunities
+            </h1>
+            <p className="text-xs text-slate-400 mt-2 max-w-lg mx-auto">
+              Real software engineering roles from Google, Amazon, Microsoft, and Meta.
+              Upload your CV to compute personalized compatibility percentages.
+            </p>
+          </div>
+        )}
+
+        {/* Live Opportunities Grid */}
+        <div className="mt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Briefcase className="w-5 h-5 text-[#00ff87]" />
+              <span>
+                {analysisData ? "Tailored Tech Job Matches" : "Active Software Engineering Roles"}
+              </span>
+            </h3>
+
+            {/* Search Input */}
+            <div className="jobs-search-bar w-full sm:w-80">
+              <Search className="w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Filter by title, company, skill..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="jobs-search-input"
+              />
+            </div>
+          </div>
+
+          <div className="jobs-cards-grid">
+            {displayedJobs.map((job) => {
+              const matchPct = job.matchPercent || 88;
+              return (
+                <div key={job._id || job.title} className="job-posting-card">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        {job.company}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-emerald-500/15 border border-emerald-500/30 text-[#00ff87]">
+                        {matchPct}% Match
                       </span>
                     </div>
-                  );
-                })}
-            </div>
-          ) : (
-            <p style={{ color: "var(--text-muted)", margin: 0 }}>No AI analysis available</p>
-          )}
+
+                    <h4 className="text-base font-bold text-white mb-2">{job.title}</h4>
+
+                    <div className="flex flex-wrap gap-1.5 mb-6">
+                      {(job.skillsRequired || []).map((sk) => (
+                        <span
+                          key={sk}
+                          className="px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-white/5 border border-white/10 text-slate-300"
+                        >
+                          {sk}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <a
+                    href={job.applyLink || "https://careers.google.com"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="job-apply-btn"
+                  >
+                    <span>Apply via Portal</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -1,43 +1,45 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   RESUMECRAFT BESPOKE DESIGN SYSTEM (Inspired by Reference UI)
-   Colors: Deep Forest Pine (#122319) | Warm Linen (#e8dcc4 / #faf7f2) | Electric Violet (#8b5cf6)
+   RESUMECRAFT — BLACK + EMERALD GREEN PREMIUM AI SAAS PALETTE
+   Design Reference: media_1795027143187_5a715851.jpg
+   Colors: Pitch Black (#000000 / #050806) | Glowing Emerald (#10b981 / #00ff87)
    ========================================================================== */
 
 :root {
-  /* Brand Palette */
-  --bg-pine-deep: #0c1811;
-  --bg-pine: #122319;
-  --bg-pine-surface: #182e21;
-  --bg-pine-border: rgba(232, 220, 196, 0.12);
+  /* Master Black + Emerald Green Palette */
+  --bg-black: #000000;
+  --bg-dark: #050806;
+  --bg-card: rgba(10, 18, 14, 0.75);
+  --bg-card-hover: rgba(14, 26, 20, 0.85);
+  --border-emerald: rgba(16, 185, 129, 0.2);
+  --border-emerald-glow: rgba(16, 185, 129, 0.5);
+  --border-glass: rgba(255, 255, 255, 0.08);
 
-  --color-violet: #8b5cf6;
-  --color-violet-hover: #7c3aed;
-  --color-violet-glow: rgba(139, 92, 246, 0.45);
-  --color-violet-soft: rgba(139, 92, 246, 0.18);
+  --color-emerald: #10b981;
+  --color-emerald-bright: #00ff87;
+  --color-emerald-dark: #059669;
+  --color-emerald-glow: rgba(16, 185, 129, 0.45);
+  --color-emerald-soft: rgba(16, 185, 129, 0.12);
 
-  --color-cream: #e8dcc4;
-  --color-cream-bright: #faf7f2;
-  --color-cream-muted: rgba(232, 220, 196, 0.72);
-  --color-cream-card: #f8f6f0;
-
-  --text-main: #faf7f2;
-  --text-muted: rgba(232, 220, 196, 0.75);
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --text-emerald: #34d399;
 
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  /* Legacy aliases for sub-pages */
-  --bg-main: var(--bg-pine-deep);
+  /* Aliases for sub-pages (Home, Jobs, Dashboard, Analysis) */
+  --bg-main: var(--bg-black);
   --text-primary: var(--text-main);
-  --accent-primary: var(--color-violet);
-  --accent-secondary: #38bdf8;
-  --glass-bg: rgba(232, 220, 196, 0.04);
-  --glass-border: rgba(232, 220, 196, 0.12);
-  --glass-shadow: rgba(0, 0, 0, 0.5);
-  --glow-1: rgba(139, 92, 246, 0.3);
-  --glow-2: rgba(31, 61, 43, 0.5);
+  --accent-primary: var(--color-emerald);
+  --accent-secondary: var(--color-emerald-bright);
+  --glass-bg: rgba(10, 18, 14, 0.7);
+  --glass-border: var(--border-emerald);
+  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  --glow-1: rgba(16, 185, 129, 0.22);
+  --glow-2: rgba(5, 150, 105, 0.18);
 }
 
 * {
@@ -48,32 +50,44 @@
 
 html {
   font-family: var(--font-sans);
-  background-color: var(--bg-pine-deep);
+  background-color: var(--bg-black);
   color: var(--text-main);
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 body {
   min-height: 100vh;
-  overflow-x: hidden;
-  background-color: var(--bg-pine-deep);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background-color: var(--bg-black);
   color: var(--text-main);
   line-height: 1.5;
+  position: relative;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 /* Subtle Dot Matrix Texture matching reference */
 .bg-dot-matrix {
-  background-image: radial-gradient(rgba(232, 220, 196, 0.12) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(16, 185, 129, 0.2) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
 }
 
-/* Reference Radial Purple Spotlight */
-.hero-violet-spotlight {
-  background: radial-gradient(ellipse 65% 55% at 50% 70%, rgba(139, 92, 246, 0.42) 0%, rgba(124, 58, 237, 0.22) 40%, transparent 75%);
+/* Emerald Spotlight */
+.hero-emerald-spotlight {
+  background: radial-gradient(ellipse 65% 55% at 50% 70%, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.15) 45%, transparent 75%);
 }
 
-/* Buttons matching the reference image */
+/* Primary and Ghost Buttons in Emerald */
 .btn-ref-primary {
   display: inline-flex;
   align-items: center;
@@ -81,22 +95,21 @@ body {
   gap: 8px;
   padding: 12px 28px;
   border-radius: 9999px;
-  background-color: var(--color-violet);
-  color: #ffffff;
-  font-weight: 600;
+  background: linear-gradient(135deg, #00ff87 0%, #10b981 100%);
+  color: #042f1a;
+  font-weight: 800;
   font-size: 0.95rem;
   letter-spacing: -0.01em;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   text-decoration: none;
 }
 
 .btn-ref-primary:hover {
-  background-color: var(--color-violet-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px -4px rgba(139, 92, 246, 0.65);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 35px rgba(0, 255, 135, 0.75);
 }
 
 .btn-ref-ghost {
@@ -106,19 +119,19 @@ body {
   gap: 8px;
   padding: 12px 26px;
   border-radius: 9999px;
-  background-color: rgba(139, 92, 246, 0.2);
-  color: #faf7f2;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.95rem;
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.2s ease;
   text-decoration: none;
 }
 
 .btn-ref-ghost:hover {
-  background-color: rgba(139, 92, 246, 0.35);
-  border-color: rgba(139, 92, 246, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(16, 185, 129, 0.4);
   transform: translateY(-2px);
 }
 
@@ -127,12 +140,12 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-pine-deep);
+  background: #000000;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(232, 220, 196, 0.18);
+  background: rgba(16, 185, 129, 0.25);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(232, 220, 196, 0.32);
+  background: rgba(0, 255, 135, 0.5);
 }

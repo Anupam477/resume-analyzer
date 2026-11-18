@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Sun, Moon, LogOut } from "lucide-react";
 import "./Navbar.css";
 
 function Navbar() {
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const location = useLocation();
   const navigate = useNavigate();
   const userEmail = localStorage.getItem("userEmail");
   const userName = localStorage.getItem("userName") || (userEmail ? userEmail.split("@")[0] : "User");
@@ -16,26 +16,41 @@ function Navbar() {
   };
 
   const navItemClass = ({ isActive }) =>
-    `ref-sub-dock-link ${isActive ? "active" : ""}`;
+    `em-nav-item ${isActive ? "active" : ""}`;
 
   return (
-    <header className="ref-sub-navbar">
+    <header className="em-global-navbar">
       {/* Brand Logo */}
-      <NavLink to="/" className="ref-sub-logo">
-        <span className="text-xl">🌱</span>
-        <span className="ref-sub-logo-text">ResumeCraft</span>
+      <NavLink to="/" className="em-nav-logo">
+        <div className="em-nav-logo-icon">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <path d="m9 15 2 2 4-4" />
+          </svg>
+        </div>
+        <span className="em-nav-logo-text">ResumeCraft</span>
       </NavLink>
 
       {/* Pill Dock Center Navigation */}
-      <nav className="ref-sub-dock">
+      <nav className="em-center-dock">
         <NavLink to="/" className={navItemClass}>
           Home
         </NavLink>
         <NavLink to="/home" className={navItemClass}>
-          Analyze
+          Analyze CV
         </NavLink>
         <NavLink to="/jobs" className={navItemClass}>
-          Jobs
+          Live Jobs
         </NavLink>
         <NavLink to="/dashboard" className={navItemClass}>
           Dashboard
@@ -48,21 +63,35 @@ function Navbar() {
       </nav>
 
       {/* User / Auth Controls */}
-      <div className="ref-sub-actions">
+      <div className="em-nav-controls">
+        <button
+          className="em-nav-circle-btn"
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          aria-label="Toggle theme"
+        >
+          {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
+
         {userEmail ? (
           <div className="flex items-center gap-3">
-            <div className="ref-user-avatar">
+            <div
+              className="em-user-avatar-circle"
+              onClick={() => navigate("/dashboard")}
+              title={userName}
+            >
               {userName.charAt(0).toUpperCase()}
             </div>
-            <span className="text-xs font-semibold text-[#faf7f2] hidden sm:inline">
-              {userName}
-            </span>
-            <button onClick={handleLogout} className="ref-btn-logout">
-              Logout
+            <button
+              onClick={handleLogout}
+              className="em-btn-signout"
+              title="Sign Out"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign Out</span>
             </button>
           </div>
         ) : (
-          <NavLink to="/login" className="ref-btn-sub-login">
+          <NavLink to="/login" className="em-btn-signin">
             Sign In
           </NavLink>
         )}

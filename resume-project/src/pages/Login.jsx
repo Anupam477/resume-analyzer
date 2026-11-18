@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Cpu, ArrowRight, ShieldCheck, Sparkles, Lock, Mail, User } from "lucide-react";
 import "./Login.css";
 
 function Login() {
@@ -10,264 +11,134 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Simple mock auth logic for the prototype
     if (email === "admin@resume.com" && password === "admin123") {
       localStorage.setItem("userEmail", email);
       localStorage.setItem("userName", name || "Admin");
       navigate("/admin");
-    } else if (email && password) {
+    } else if (email) {
       localStorage.setItem("userEmail", email);
-      localStorage.setItem("userName", name || "User");
+      localStorage.setItem("userName", name || email.split("@")[0] || "Engineer");
       navigate("/dashboard");
     }
   };
 
+  const handleDemoFill = () => {
+    setName("Alex Vance");
+    setEmail("alex.vance@tier1.dev");
+    setPassword("password123");
+  };
+
+  const handleAdminDemoFill = () => {
+    setName("Platform Admin");
+    setEmail("admin@resume.com");
+    setPassword("admin123");
+  };
+
   return (
-    <div className="page-animate"
-      style={{
-        minHeight: "calc(100vh - 75px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "40px 20px",
-        color: "var(--text-main)",
-      }}
-    >
-      <div className="glass-panel login-grid">
-        {/* Left Section */}
+    <div className="login-page-wrapper">
+      <div className="login-grid">
+        {/* Left Info Panel */}
         <div className="login-info-panel">
-          <div
-            style={{
-              display: "inline-block",
-              padding: "8px 16px",
-              borderRadius: "999px",
-              background: "var(--bg-secondary)",
-              color: "var(--accent-secondary)",
-              fontWeight: "600",
-              fontSize: "0.9rem",
-              marginBottom: "22px",
-              width: "fit-content",
-            }}
-          >
-            AI Resume Platform
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 mb-6">
+            <Cpu className="w-3.5 h-3.5 text-[#00ff87]" />
+            <span>AI Resume Intelligence</span>
           </div>
 
-          <h1
-            style={{
-              fontSize: "3rem",
-              lineHeight: "1.1",
-              marginBottom: "18px",
-              fontWeight: "800",
-              color: "var(--text-main)",
-            }}
-          >
-            Welcome Back to
-            <br />
-            Resume Analyzer
+          <h1 className="text-3xl font-extrabold text-white mb-4 leading-tight">
+            Authenticate to Your<br />Engineering Dashboard
           </h1>
 
-          <p
-            style={{
-              color: "var(--text-muted)",
-              fontSize: "1.05rem",
-              lineHeight: "1.8",
-              maxWidth: "420px",
-              marginBottom: "28px",
-            }}
-          >
-            Analyze resumes, discover missing skills, and get smart job
-            recommendations through a premium dashboard experience.
+          <p className="text-xs text-slate-400 mb-8 leading-relaxed max-w-sm">
+            Save audit histories, track skill gaps, benchmark against live openings, and download verifiable PDF reports.
           </p>
 
-          <div style={{ display: "grid", gap: "14px" }}>
-            <div
-              style={{
-                background: "var(--bg-secondary)",
-                border: "1px solid var(--glass-border)",
-                borderRadius: "18px",
-                padding: "16px 18px",
-                color: "var(--text-main)",
-              }}
-            >
-              🚀 Smart ATS score analysis
+          <div className="flex flex-col gap-3">
+            <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 text-xs text-slate-300 flex items-center gap-3">
+              <ShieldCheck className="w-4 h-4 text-[#00ff87]" />
+              <span>Deterministic ATS Lexicon v2.4</span>
             </div>
-
-            <div
-              style={{
-                background: "var(--bg-secondary)",
-                border: "1px solid var(--glass-border)",
-                borderRadius: "18px",
-                padding: "16px 18px",
-                color: "var(--text-main)",
-              }}
-            >
-              💼 Personalized job matching
-            </div>
-
-            <div
-              style={{
-                background: "var(--bg-secondary)",
-                border: "1px solid var(--glass-border)",
-                borderRadius: "18px",
-                padding: "16px 18px",
-                color: "var(--text-main)",
-              }}
-            >
-              📊 Premium dashboard insights
+            <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 text-xs text-slate-300 flex items-center gap-3">
+              <Sparkles className="w-4 h-4 text-[#00ff87]" />
+              <span>Live Job Matches at Google, Amazon & Meta</span>
             </div>
           </div>
         </div>
 
-        {/* Right Section */}
+        {/* Right Form Panel */}
         <div className="login-form-panel">
-          <h2
-            style={{
-              fontSize: "2.2rem",
-              marginBottom: "10px",
-              color: "var(--text-main)",
-              fontWeight: "700",
-            }}
-          >
-            Login / Admin
-          </h2>
-
-          <p
-            style={{
-              color: "var(--text-muted)",
-              marginBottom: "28px",
-              fontSize: "1rem",
-            }}
-          >
-            Continue to your dashboard and resume reports
+          <h2 className="text-xl font-bold text-white mb-2">Sign In or Create Account</h2>
+          <p className="text-xs text-slate-400 mb-6">
+            Enter your details to access your resumes.
           </p>
 
-          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          <form onSubmit={handleLogin} className="flex flex-col gap-4 text-xs">
             <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  color: "var(--text-main)",
-                  fontWeight: "600",
-                }}
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                placeholder="Enter your name"
-                style={{
-                  width: "100%",
-                  padding: "15px 16px",
-                  borderRadius: "16px",
-                  border: "1px solid var(--glass-border)",
-                  background: "var(--bg-secondary)",
-                  color: "var(--text-main)",
-                  fontSize: "1rem",
-                  outline: "none",
-                  boxSizing: "border-box",
-                }}
-              />
+              <label className="block text-slate-300 font-semibold mb-1">Your Full Name</label>
+              <div className="relative">
+                <User className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
+                <input
+                  type="text"
+                  placeholder="e.g. Alex Vance"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
             </div>
 
             <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  color: "var(--text-main)",
-                  fontWeight: "600",
-                }}
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="Enter your email"
-                style={{
-                  width: "100%",
-                  padding: "15px 16px",
-                  borderRadius: "16px",
-                  border: "1px solid var(--glass-border)",
-                  background: "var(--bg-secondary)",
-                  color: "var(--text-main)",
-                  fontSize: "1rem",
-                  outline: "none",
-                  boxSizing: "border-box",
-                }}
-              />
+              <label className="block text-slate-300 font-semibold mb-1">Email Address</label>
+              <div className="relative">
+                <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
+                <input
+                  type="email"
+                  required
+                  placeholder="alex@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
             </div>
 
             <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  color: "var(--text-main)",
-                  fontWeight: "600",
-                }}
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Enter your password"
-                style={{
-                  width: "100%",
-                  padding: "15px 16px",
-                  borderRadius: "16px",
-                  border: "1px solid var(--glass-border)",
-                  background: "var(--bg-secondary)",
-                  color: "var(--text-main)",
-                  fontSize: "1rem",
-                  outline: "none",
-                  boxSizing: "border-box",
-                }}
-              />
+              <label className="block text-slate-300 font-semibold mb-1">Password</label>
+              <div className="relative">
+                <Lock className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
             </div>
 
-            <button
-              type="submit"
-              className="btn-glow"
-              style={{
-                marginTop: "8px",
-                padding: "15px 18px",
-                border: "none",
-                borderRadius: "16px",
-                background: "linear-gradient(135deg, var(--accent-secondary), var(--accent-primary))",
-                color: "#fff",
-                fontWeight: "700",
-                fontSize: "1rem",
-                cursor: "pointer",
-                boxShadow: "0 14px 30px var(--glow-2)",
-              }}
-            >
-              Login / Admin
+            <button type="submit" className="login-submit-btn w-full mt-2">
+              <span>Enter Workspace</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          <p
-            style={{
-              marginTop: "22px",
-              color: "var(--text-muted)",
-              textAlign: "center",
-              fontSize: "0.96rem",
-            }}
-          >
-            Don&apos;t have an account?{" "}
-            <span style={{ color: "var(--accent-secondary)", fontWeight: "600", cursor: "pointer" }}>
-              Sign up later
-            </span>
-          </p>
+          {/* Quick Demo Fill Buttons */}
+          <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
+            <button
+              type="button"
+              onClick={handleDemoFill}
+              className="text-[#00ff87] hover:text-white underline cursor-pointer"
+            >
+              Quick Demo Fill
+            </button>
+            <button
+              type="button"
+              onClick={handleAdminDemoFill}
+              className="text-slate-400 hover:text-white underline cursor-pointer"
+            >
+              Admin Login (admin123)
+            </button>
+          </div>
         </div>
       </div>
     </div>

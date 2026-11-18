@@ -1,138 +1,335 @@
-.jobs-container {
-  min-height: calc(100vh - 75px);
-  padding: 40px 24px;
-  background: radial-gradient(circle at 50% 10%, #1b3525 0%, #122419 50%, #0c1811 100%);
-  color: var(--text-main);
-  font-family: var(--font-sans);
+/* ==========================================================================
+   RESUMECRAFT RESULTS & JOBS DASHBOARD (JobsPage.css) — BLACK + EMERALD GREEN
+   ========================================================================== */
+
+.jobs-page-container {
+  min-height: calc(100vh - 72px);
+  background-color: #000000;
+  background-image: 
+    radial-gradient(circle at 50% 10%, rgba(16, 185, 129, 0.14) 0%, transparent 55%),
+    radial-gradient(circle at 85% 65%, rgba(0, 255, 135, 0.08) 0%, transparent 50%);
+  padding: 40px 24px 80px;
+  color: #ffffff;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  box-sizing: border-box;
 }
 
-.jobs-header {
-  text-align: center;
-  margin-bottom: 36px;
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
+.jobs-page-wrapper {
+  max-width: 1240px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-.jobs-header h1 {
-  font-size: clamp(2rem, 4vw, 2.7rem);
+/* Header & Breadcrumb */
+.results-header-card {
+  background: rgba(10, 18, 14, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 28px 32px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(16, 185, 129, 0.15);
+}
+
+.results-badge-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.results-title {
+  font-size: 1.8rem;
   font-weight: 800;
-  color: #faf7f2;
-  margin-bottom: 12px;
+  color: #ffffff;
   letter-spacing: -0.02em;
 }
 
-.jobs-header p {
-  color: rgba(232, 220, 196, 0.72);
-  font-size: 0.95rem;
-  line-height: 1.6;
+/* Buttons */
+.job-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #00ff87 0%, #10b981 100%);
+  color: #042f1a;
+  font-weight: 800;
+  font-size: 0.88rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
 }
 
-.skills-box {
-  max-width: 960px;
-  margin: 0 auto 36px;
-  background: rgba(24, 46, 33, 0.65);
-  padding: 24px 28px;
-  border-radius: 22px;
-  border: 1px solid rgba(232, 220, 196, 0.12);
-  box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(14px);
+.job-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0, 255, 135, 0.7);
 }
 
-.skills-box h3 {
-  margin-bottom: 16px;
-  color: #faf7f2;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.skills-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.skill-tag {
-  background: rgba(139, 92, 246, 0.18);
-  border: 1px solid rgba(139, 92, 246, 0.35);
-  color: #c4b5fd;
-  padding: 7px 16px;
-  border-radius: 9999px;
+.job-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.88rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
 }
 
-.skill-tag:hover {
-  background: rgba(139, 92, 246, 0.3);
+.job-btn-outline:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #00ff87;
   transform: translateY(-1px);
 }
 
-.jobs-grid {
-  max-width: 1100px;
-  margin: 0 auto;
+/* 4-Pillar Metric Grid */
+.results-grid-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
 }
 
-.job-card {
-  background: rgba(24, 46, 33, 0.6);
-  border: 1px solid rgba(232, 220, 196, 0.12);
-  border-radius: 22px;
-  padding: 26px;
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  transition: all 0.25s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.job-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(139, 92, 246, 0.4);
-  box-shadow: 0 20px 45px -10px rgba(139, 92, 246, 0.25);
-}
-
-.job-title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #faf7f2;
-  margin-bottom: 6px;
-  letter-spacing: -0.01em;
-}
-
-.company-name {
-  color: #a78bfa;
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.apply-btn {
-  margin-top: 20px;
-  display: inline-block;
-  text-align: center;
-  padding: 11px 20px;
-  border-radius: 9999px;
-  background-color: var(--color-violet);
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 6px 18px -4px rgba(139, 92, 246, 0.5);
+.results-metric-card {
+  background: rgba(10, 18, 14, 0.72);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 20px;
+  padding: 22px 20px;
   transition: all 0.2s ease;
 }
 
-.apply-btn:hover {
-  background-color: var(--color-violet-hover);
+.results-metric-card:hover {
+  border-color: rgba(16, 185, 129, 0.45);
   transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
 }
 
-@media (max-width: 768px) {
-  .jobs-container {
-    padding: 24px 16px;
+.metric-card-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.metric-card-val {
+  font-size: 2.2rem;
+  font-weight: 800;
+  font-family: "JetBrains Mono", monospace;
+  margin-bottom: 8px;
+}
+
+.metric-card-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.metric-card-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #00ff87;
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.5);
+  transition: width 0.8s ease-out;
+}
+
+/* Two-column layout for gaps and rewrites */
+.results-duo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.results-sub-panel {
+  background: rgba(10, 18, 14, 0.75);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  border-radius: 22px;
+  padding: 26px 24px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Skill Badge */
+.skill-badge-matched {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #00ff87;
+}
+
+/* Bullet Point Rewrites */
+.rewrite-card {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.78rem;
+}
+
+.rewrite-role-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #34d399;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rewrite-before {
+  color: #94a3b8;
+  line-height: 1.5;
+  background: rgba(239, 68, 68, 0.06);
+  padding: 8px 10px;
+  border-radius: 8px;
+  border-left: 2px solid #ef4444;
+}
+
+.rewrite-after {
+  color: #f1f5f9;
+  line-height: 1.5;
+  background: rgba(16, 185, 129, 0.08);
+  padding: 8px 10px;
+  border-radius: 8px;
+  border-left: 2px solid #00ff87;
+}
+
+/* Job Search Filter Bar */
+.jobs-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(10, 18, 14, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 16px;
+  padding: 8px 14px;
+}
+
+.jobs-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 0.85rem;
+  color: #ffffff;
+}
+
+.jobs-search-input:focus {
+  outline: none;
+}
+
+/* Jobs Grid */
+.jobs-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.job-posting-card {
+  background: rgba(10, 18, 14, 0.72);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 20px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.job-posting-card:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(14, 26, 20, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -5px rgba(16, 185, 129, 0.25);
+}
+
+.job-apply-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #00ff87;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.job-apply-btn:hover {
+  background: #10b981;
+  color: #042f1a;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+}
+
+@media (max-width: 900px) {
+  .results-duo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Print Stylesheet for Executive PDF export */
+@media print {
+  .jobs-page-container {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 20px !important;
+  }
+  .em-global-navbar,
+  .job-btn-primary,
+  .job-btn-outline,
+  .jobs-search-bar,
+  .job-apply-btn {
+    display: none !important;
+  }
+  .results-header-card,
+  .results-metric-card,
+  .results-sub-panel,
+  .job-posting-card {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+  }
+  .results-title,
+  .font-bold,
+  .metric-card-val {
+    color: #000000 !important;
+  }
+  .metric-card-track {
+    background: #eeeeee !important;
+  }
+  .metric-card-fill {
+    background: #10b981 !important;
   }
 }
